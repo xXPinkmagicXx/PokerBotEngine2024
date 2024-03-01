@@ -18,6 +18,10 @@ class Bot:
   def canCall(self, obs: Observation, fractionOfStack):
     
     maxCallSize = fractionOfStack * obs.get_my_player_info().stack
+    
+    if obs.big_blind > obs.get_my_player_info().stack:
+      return True
+    
     if maxCallSize > obs.get_call_size():
       return True
     
@@ -36,7 +40,7 @@ class Bot:
       if currentHandType > 1:
         return True
       return False
-      
+  
   def getMinRaise(self, obs: Observation, n=1):
       minRaise = obs.get_min_raise()
       if minRaise == 1:
@@ -119,7 +123,7 @@ class Bot:
     ## Turn
     if obs.current_round == 2:
       ## if very good hand
-      if self.veryGoodHand(currentHand) and self.canCall(obs, 0.75):
+      if self.veryGoodHand(currentHand) and self.canCall(obs, 0.8):
           
           if isHigh:
             return self.getMinRaise(obs, 2)
@@ -129,7 +133,7 @@ class Bot:
           return self.getMinRaise(obs)
       
       ## good hand
-      if self.goodHand(currentHand) and self.canCall(obs, 0.30):
+      if self.goodHand(currentHand) and self.canCall(obs, 0.45):
         
         if isHigh:
           return self.getMinRaise(obs, 3)
@@ -143,7 +147,7 @@ class Bot:
 
     if obs.current_round == 3:
       ## if very good hand
-      if self.veryGoodHand(currentHand) and self.canCall(obs, 0.75):
+      if self.veryGoodHand(currentHand) and self.canCall(obs, 0.8):
           
           if isHigh:
             return self.getMinRaise(obs, 4)
@@ -153,7 +157,7 @@ class Bot:
           return self.getMinRaise(obs)
       
       ## good hand
-      if self.goodHand(currentHand) and self.canCall(obs, 0.30):
+      if self.goodHand(currentHand) and self.canCall(obs, 0.45):
         
         if isHigh:
           return self.getMinRaise(obs, 3)
@@ -171,7 +175,7 @@ class Bot:
       if currentHand == HandType.FLUSH:
         return self.getMinRaise(obs, 5)
        
-      if self.veryGoodHand(currentHand) and self.canCall(obs, 0.8):
+      if self.veryGoodHand(currentHand) and self.canCall(obs, 0.80):
           
           if isHigh:
             return self.getMinRaise(obs, 4)
@@ -181,13 +185,15 @@ class Bot:
           return self.getMinRaise(obs)
       
       ## good hand
-      if self.goodHand(currentHand) and self.canCall(obs, 0.3):
+      if self.goodHand(currentHand) and self.canCall(obs, 0.4):
         
         if isHigh:
           return self.getMinRaise(obs, 3)
         if isMid:
            return self.getMinRaise(obs, 2)
         
+        return self.getMinRaise(obs)
+      
       ## fold or check
       return self.getMinLegalAction(obs)
 
